@@ -1,0 +1,15 @@
+include 'jfoenix'
+include 'demo'
+
+rootProject.name = 'jfoenix-root'
+include 'MyDemo'
+include 'MainUi'
+include 'Framework'
+include 'Framework'
+include 'ADBManager'
+include 'MExecutor'
+include 'AppControl'
+include 'DTKManager'
+include 'IdleFishApp'
+include 'PhoneManager'
+

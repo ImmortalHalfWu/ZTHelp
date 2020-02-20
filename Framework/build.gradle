@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'com.jfoenix'
+version '0.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+//    compile fileTree(dir:'lib',includes:['*jar'])
+//    implementation files('lib/log4j-1.2-api-2.11.1.jar')
+    implementation fileTree(include: ['*.jar'], dir: 'lib')
+
+//    compile file("lib/log4j-1.2-api-2.11.1.jar")
+}
