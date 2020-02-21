@@ -1,48 +1,25 @@
 package immortal.half.wu.ui.weights.beans;
 
-import immortal.half.wu.ui.models.beans.IdleFishUserConfigBean;
+import immortal.half.wu.ui.models.beans.CacheIdleFishUserConfigBean;
+
+import java.util.List;
 
 public class ProductItemViewBean extends BaseViewBean {
 
     public static ProductItemViewBean create(
-            String productUrl, String imageUrl, String productName, String time, String stateString, String stateColor, String oldPrice, String nowPrice, String profitPrice
+            String productUrl, String imageUrl, String productName, String time,
+            String stateString, String stateColor,
+            String oldPrice, String nowPrice, String profitPrice, List<String> tags
     ) {
         return new ProductItemViewBean(
-            "", productUrl, imageUrl, productName, time, stateString, stateColor, oldPrice, nowPrice, profitPrice
+            "", productUrl, imageUrl, productName, time, stateString, stateColor,
+                oldPrice, nowPrice, profitPrice, tags
         );
     }
 
-
-    public static ProductItemViewBean createSendSuc(
-            String productUrl,
-            String imageUrl,
-            String productName,
-            String time,
-            String oldPrice,
-            String nowPrice,
-            String profitPrice
-    ) {
-        return new ProductItemViewBean(
-                "", productUrl, imageUrl, productName, time, STATE_SUC, STATE_COLOR_SUC, oldPrice, nowPrice, profitPrice
-        );
-    }
-
-    public static ProductItemViewBean createSendFail(
-            String productUrl,
-            String imageUrl,
-            String productName,
-            String time,
-            String oldPrice,
-            String nowPrice,
-            String profitPrice
-    ) {
-        return new ProductItemViewBean(
-                "", productUrl, imageUrl, productName, time, STATE_COLOR_FAIL, STATE_FAIL, oldPrice, nowPrice, profitPrice
-        );
-    }
 
     public static ProductItemViewBean create(
-            Object tag, IdleFishUserConfigBean.IdleFishProductBean bean
+            Object tag, CacheIdleFishUserConfigBean.CacheIdleFishProductBean bean
     ) {
         return new ProductItemViewBean(
                 tag, bean
@@ -50,7 +27,7 @@ public class ProductItemViewBean extends BaseViewBean {
     }
 
     public static ProductItemViewBean createSendSuc(
-            Object tag, IdleFishUserConfigBean.IdleFishProductBean bean
+            Object tag, CacheIdleFishUserConfigBean.CacheIdleFishProductBean bean
     ) {
         return new ProductItemViewBean(
                 tag, STATE_COLOR_SUC, bean
@@ -58,7 +35,7 @@ public class ProductItemViewBean extends BaseViewBean {
     }
 
     public static ProductItemViewBean createSendFail(
-            Object tag, IdleFishUserConfigBean.IdleFishProductBean bean
+            Object tag, CacheIdleFishUserConfigBean.CacheIdleFishProductBean bean
     ) {
         return new ProductItemViewBean(
                 tag, STATE_COLOR_FAIL, bean
@@ -71,22 +48,28 @@ public class ProductItemViewBean extends BaseViewBean {
     private final static String STATE_SUC = "发布成功";
     private final static String STATE_FAIL = "发布失败";
 
-    private final IdleFishUserConfigBean.IdleFishProductBean idleFishModelBean;
+    private final CacheIdleFishUserConfigBean.CacheIdleFishProductBean idleFishModelBean;
     private final String stateColor;
 
 
-    private ProductItemViewBean(Object tag, String productUrl, String imageUrl, String productName, String time, String stateString, String stateColor, String oldPrice, String nowPrice, String profitPrice) {
-        this(tag, stateColor, new IdleFishUserConfigBean.IdleFishProductBean(
+    private ProductItemViewBean(
+            Object tag,
+            String productUrl,
+            String imageUrl,
+            String productName,
+            String time, String stateString,
+            String stateColor, String oldPrice, String nowPrice, String profitPrice, List<String> tags) {
+        this(tag, stateColor, new CacheIdleFishUserConfigBean.CacheIdleFishProductBean(
                 productUrl, imageUrl, productName,
                 time, stateString,
-                oldPrice, nowPrice, profitPrice
-        ));
+                oldPrice, nowPrice, profitPrice,
+                tags));
     }
 
     private ProductItemViewBean(
             Object tag,
             String stateColor,
-            IdleFishUserConfigBean.IdleFishProductBean bean) {
+            CacheIdleFishUserConfigBean.CacheIdleFishProductBean bean) {
         super(tag);
         idleFishModelBean = bean;
         this.stateColor = stateColor;
@@ -94,7 +77,7 @@ public class ProductItemViewBean extends BaseViewBean {
 
     private ProductItemViewBean(
             Object tag,
-            IdleFishUserConfigBean.IdleFishProductBean bean) {
+            CacheIdleFishUserConfigBean.CacheIdleFishProductBean bean) {
         super(tag);
         idleFishModelBean = bean;
         this.stateColor = bean.getStateString().equals(STATE_SUC) ? STATE_COLOR_SUC : STATE_COLOR_FAIL;
@@ -134,5 +117,13 @@ public class ProductItemViewBean extends BaseViewBean {
 
     public String getProductUrl() {
         return idleFishModelBean.getProductUrl();
+    }
+
+    @Override
+    public String toString() {
+        return "ProductItemViewBean{" +
+                "idleFishModelBean=" + idleFishModelBean +
+                ", stateColor='" + stateColor + '\'' +
+                '}';
     }
 }

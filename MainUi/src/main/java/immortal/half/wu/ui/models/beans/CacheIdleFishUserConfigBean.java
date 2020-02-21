@@ -1,32 +1,29 @@
 package immortal.half.wu.ui.models.beans;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
-public class IdleFishUserConfigBean {
+public class CacheIdleFishUserConfigBean {
 
-    private final List<IdleFishUserInfoBean> idleFishUserInfoBeans;
+    private final List<CacheIdleFishUserInfoBean> idleFishUserInfoBeans;
 
-    public IdleFishUserConfigBean(List<IdleFishUserInfoBean> idleFishUserInfoBeans) {
+    public CacheIdleFishUserConfigBean(List<CacheIdleFishUserInfoBean> idleFishUserInfoBeans) {
         this.idleFishUserInfoBeans = idleFishUserInfoBeans;
     }
 
-    public List<IdleFishUserInfoBean> getIdleFishUserInfoBeans() {
+    public List<CacheIdleFishUserInfoBean> getIdleFishUserInfoBeans() {
         return idleFishUserInfoBeans;
     }
 
 
 
 
-    public static class IdleFishUserInfoBean {
+    public static class CacheIdleFishUserInfoBean {
 
         private final String userName;
-        private final List<IdleFishProductBean> idleFishProductModelBeans;
+        private final List<CacheIdleFishProductBean> idleFishProductModelBeans;
 
-        public IdleFishUserInfoBean(String userName, List<IdleFishProductBean> idleFishProductModelBeans) {
+        public CacheIdleFishUserInfoBean(String userName, List<CacheIdleFishProductBean> idleFishProductModelBeans) {
             this.userName = userName;
             this.idleFishProductModelBeans = idleFishProductModelBeans;
         }
@@ -35,15 +32,15 @@ public class IdleFishUserConfigBean {
             return userName;
         }
 
-        public List<IdleFishProductBean> getIdleFishProductModelBeans() {
+        public List<CacheIdleFishProductBean> getIdleFishProductModelBeans() {
             return idleFishProductModelBeans;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof IdleFishUserInfoBean)) return false;
-            IdleFishUserInfoBean that = (IdleFishUserInfoBean) o;
+            if (!(o instanceof CacheIdleFishUserInfoBean)) return false;
+            CacheIdleFishUserInfoBean that = (CacheIdleFishUserInfoBean) o;
             return userName.equals(that.userName);
         }
 
@@ -58,7 +55,7 @@ public class IdleFishUserConfigBean {
 
 
 
-    public static class IdleFishProductBean {
+    public static class CacheIdleFishProductBean {
 
         private final String productUrl;
         private final String imageUrl;
@@ -68,8 +65,9 @@ public class IdleFishUserConfigBean {
         private final String oldPrice;
         private final String nowPrice;
         private final String profitPrice;
+        private final List<String> tags;
 
-        public IdleFishProductBean(String productUrl, String imageUrl, String productName, String time, String stateString, String oldPrice, String nowPrice, String profitPrice) {
+        public CacheIdleFishProductBean(String productUrl, String imageUrl, String productName, String time, String stateString, String oldPrice, String nowPrice, String profitPrice, List<String> tags) {
             this.productUrl = productUrl;
             this.imageUrl = imageUrl;
             this.productName = productName;
@@ -78,6 +76,7 @@ public class IdleFishUserConfigBean {
             this.oldPrice = oldPrice;
             this.nowPrice = nowPrice;
             this.profitPrice = profitPrice;
+            this.tags = tags;
         }
 
         public String getProductUrl() {
@@ -113,10 +112,24 @@ public class IdleFishUserConfigBean {
         }
 
         @Override
+        public String toString() {
+            return "CacheIdleFishProductBean{" +
+                    "productUrl='" + productUrl + '\'' +
+                    ", imageUrl='" + imageUrl + '\'' +
+                    ", productName='" + productName + '\'' +
+                    ", time='" + time + '\'' +
+                    ", stateString='" + stateString + '\'' +
+                    ", oldPrice='" + oldPrice + '\'' +
+                    ", nowPrice='" + nowPrice + '\'' +
+                    ", profitPrice='" + profitPrice + '\'' +
+                    '}';
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof IdleFishProductBean)) return false;
-            IdleFishProductBean that = (IdleFishProductBean) o;
+            if (!(o instanceof CacheIdleFishProductBean)) return false;
+            CacheIdleFishProductBean that = (CacheIdleFishProductBean) o;
             return productUrl.equals(that.productUrl) &&
                     oldPrice.equals(that.oldPrice) &&
                     nowPrice.equals(that.nowPrice) &&
@@ -126,6 +139,10 @@ public class IdleFishUserConfigBean {
         @Override
         public int hashCode() {
             return Objects.hash(productUrl, oldPrice, nowPrice, profitPrice);
+        }
+
+        public List<String> getTags() {
+            return tags;
         }
     }
 

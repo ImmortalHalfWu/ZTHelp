@@ -1,5 +1,7 @@
 package immortal.half.wu.ui.weights;
 
+import immortal.half.wu.ui.events.DeviceListItemClickEvent;
+import immortal.half.wu.ui.utils.MEventBus;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -10,6 +12,8 @@ import immortal.half.wu.ui.weights.beans.DeviceItemViewBean;
 
 
 public class DeviceListItemView extends StackPane {
+
+    private static DeviceItemViewBean choiceDataBean;
 
     private final DeviceItemViewBean dataBean;
 
@@ -55,12 +59,12 @@ public class DeviceListItemView extends StackPane {
 
          */
 
-        setStyle("-fx-min-width: 185; -fx-max-width: 185; " +
-            "-fx-min-height: 55; -fx-max-height: 5;");
+//        setStyle("-fx-min-width: 180; -fx-max-width: 180; " +
+//            "-fx-min-height: 55; -fx-max-height: 5;");
 
         setAlignment(Pos.TOP_LEFT);
         setPrefHeight(55);
-        setPrefWidth(185);
+        setPrefWidth(182);
 
 
         ImageView iconImage = new ImageView();
@@ -82,6 +86,14 @@ public class DeviceListItemView extends StackPane {
         getChildren().add(iconImage);
         getChildren().add(deviceStateLabel);
         getChildren().add(loginStateLabel);
+
+        setOnMouseClicked(event -> {
+            if (choiceDataBean != null && choiceDataBean.equals(dataBean)) {
+                return;
+            }
+            choiceDataBean = dataBean;
+            MEventBus.post(new DeviceListItemClickEvent(DeviceListItemView.this, dataBean));
+        });
     }
 
     public DeviceItemViewBean getDataBean() {

@@ -3,6 +3,8 @@ package immortal.half.wu.ui;
 import com.jfoenix.assets.JFoenixResources;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.svg.SVGGlyphLoader;
+import immortal.half.wu.FileUtils;
+import immortal.half.wu.LogUtil;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -18,6 +20,8 @@ import java.io.IOException;
 public class Main extends Application {
 
     public static void main(String[] args) {
+        FileUtils.init();
+        LogUtil.i("23", "123123");
         launch(args);
     }
 

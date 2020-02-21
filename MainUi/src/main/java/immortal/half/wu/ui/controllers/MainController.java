@@ -1,18 +1,20 @@
 package immortal.half.wu.ui.controllers;
 
+import com.google.common.eventbus.Subscribe;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRippler;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
-import immortal.half.wu.device.division.UIIdleFishProductBean;
-import immortal.half.wu.device.division.interfaces.IUiAndroidDevice;
-import immortal.half.wu.device.division.interfaces.IUiApp;
+import immortal.half.wu.LogUtil;
+import immortal.half.wu.ui.events.DeviceListItemClickEvent;
+import immortal.half.wu.ui.events.ProductItemClickEvent;
+import immortal.half.wu.ui.events.ProductItemDelClickEvent;
+import immortal.half.wu.ui.events.ProductItemEditClickEvent;
 import immortal.half.wu.ui.models.MainModel;
-import immortal.half.wu.ui.models.beans.IdleFishUserConfigBean;
+import immortal.half.wu.ui.models.beans.CacheIdleFishUserConfigBean;
 import immortal.half.wu.ui.models.beans.UIDevAppProductBindBean;
 import immortal.half.wu.ui.models.interfaces.MainModelListener;
-import immortal.half.wu.ui.utils.BeanUtil;
-import immortal.half.wu.ui.utils.ThreadUtil;
+import immortal.half.wu.ui.utils.MEventBus;
 import immortal.half.wu.ui.weights.beans.ProductItemViewBean;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -20,7 +22,6 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -34,15 +35,11 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 @ViewController(value = "/fxml/MainFxml.fxml", title = "我的demo")
 public final class MainController implements MainModelListener {
 
-    private MainModel mainModel;
+    private static final String TAG = "MainController";
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
@@ -51,33 +48,36 @@ public final class MainController implements MainModelListener {
     @FXML
     private StackPane optionsBurger;
     @FXML
-    private ListView<DeviceListItemView> listView;
+    private ListView<DeviceListItemView> deviceListView;
     @FXML
     private JFXButton sendProductBt;
     @FXML
     private JFXButton searchDeviceBt;
     @FXML
-    private ListView<Node> productListView;
+    private ListView<ProductListItemView> productListView;
     @FXML
     private BorderPane borderPane;
 
-    private ObservableList<DeviceListItemView> deviceViews = FXCollections.observableArrayList();
-    private ObservableList<Node> productViews = FXCollections.observableArrayList();
+    private LinkedHashMap<DeviceListItemView, ObservableList<ProductListItemView>> deviceProductMap = new LinkedHashMap<>();
+    private DeviceListItemView choiceDeviceItemView;
 
     @PostConstruct
     public void init() throws Exception {
 
+        MEventBus.register(this);
+        new MainModel(this);
+
         setBtIco(sendProductBt, "icomoon.svg.paper-plane-o, send-o");
         setBtIco(searchDeviceBt, "icomoon.svg.search2");
 
-        listView.getStyleClass().add("device-list");
-        listView.setPrefWidth(185);
-        listView.setCellFactory(new BaseListViewAdapter<>());
-        listView.setItems(deviceViews);
+        deviceListView.getStyleClass().add("device-list");
+        deviceListView.setPrefWidth(185);
+        deviceListView.setCellFactory(new BaseListViewAdapter<>());
+//        deviceListView.setItems(deviceViews);
 //        deviceViews.add(new DeviceListItemView(DeviceItemViewBean.createConnectLoginBean("", "朴素不朴素", "")));
 //        deviceViews.add(new DeviceListItemView(DeviceItemViewBean.createConnectUnLoginBean("", "")));
 //        deviceViews.add(new DeviceListItemView(DeviceItemViewBean.createDisconnectLoginBean("", "朴素不朴素")));
-//        listView.setItems(deviceViews);
+//        deviceListView.setItems(deviceViews);
 //        long s = System.currentTimeMillis();
 //        List<ProductItemViewBean> datas = new ArrayList<>();
 //        for (int i = 0; i < 15; i++) {
@@ -121,7 +121,7 @@ public final class MainController implements MainModelListener {
 
         productListView.setStyle("-fx-background-color: #eeeeee");
         productListView.setCellFactory(new BaseListViewAdapter<>());
-        productListView.setItems(productViews);
+//        productListView.setItems(productViews);
 
     }
 
@@ -132,64 +132,91 @@ public final class MainController implements MainModelListener {
         bt.setGraphic(icoMoonGlyph);
     }
 
+    @Subscribe()
+    public void deviceClick(DeviceListItemClickEvent deviceListItemClickEvent) {
+        // todo 点击设备
+        LogUtil.i(TAG, "点击设备：" + deviceListItemClickEvent.getDataBean());
+        ObservableList<ProductListItemView> newProducts = deviceProductMap.get(deviceListItemClickEvent.getView());
+        LogUtil.i(TAG, "获得商品列表：" + newProducts);
+        if (newProducts != null) {
+            productListView.setItems(newProducts);
+        }
+    }
+
+    @Subscribe
+    public void productClick(ProductItemClickEvent deviceListItemClickEvent) {
+        System.out.println("点击商品：" + deviceListItemClickEvent.getProductItemViewBean());
+//        todo 点击商品
+    }
+
+    @Subscribe
+    public void productDelClick(ProductItemDelClickEvent delClickEvent) {
+        System.out.println("点击删除商品：" + delClickEvent.getProductItemViewBean());
+//        todo 点击删除商品
+    }
+
+    @Subscribe
+    public void productEditClick(ProductItemEditClickEvent editClickEvent) {
+        System.out.println("点击编辑商品：" + editClickEvent.getProductItemViewBean());
+//        todo 点击编辑商品
+    }
+
     @Override
     public void loadUserConfigOver(List<UIDevAppProductBindBean> devAppProductBindBeans) {
 //        初始化设备列表， 全部未登录
-        ObservableList<DeviceListItemView> deviceViewTemps = FXCollections.observableArrayList();
-        ObservableList<Node> productViewsTemps  = FXCollections.observableArrayList();
 
         List<ProductItemViewBean> childViewBeanTemps = new ArrayList<>(4);
-        List<ProductItemViewBean> sourceChildViewBeanTemps = new ArrayList<>();
 
         devAppProductBindBeans.forEach(bean -> {
+            ObservableList<ProductListItemView> productViewsTemps  = FXCollections.observableArrayList();
 
-            DeviceItemViewBean deviceItemViewBean = DeviceItemViewBean.createDisconnectLoginBean(bean, bean.getUserName().getName());
-            deviceViewTemps.add(new DeviceListItemView(deviceItemViewBean));
+            DeviceListItemView deviceListItemView = new DeviceListItemView(
+                    DeviceItemViewBean.createDisconnectLoginBean(bean, bean.getUserName().getName()));
 
-            List<IdleFishUserConfigBean.IdleFishProductBean> productBeans = bean.getProducts();
+            List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> productBeans = bean.getProducts();
 
             int size = productBeans.size();
 
             for (int i = 0, lineMaxCount = 0; i < size; i++, lineMaxCount++) {
                 if (lineMaxCount == 4 || (i == size - 1  && lineMaxCount > 0)) {
-                    productViewsTemps.add(new ProductListItemView(childViewBeanTemps));
+                    productViewsTemps.add(new ProductListItemView(new ArrayList<>(childViewBeanTemps)));
                     childViewBeanTemps.clear();
                     lineMaxCount = 0;
                 }
-                IdleFishUserConfigBean.IdleFishProductBean idleFishProductBean = productBeans.get(i);
+                CacheIdleFishUserConfigBean.CacheIdleFishProductBean idleFishProductBean = productBeans.get(i);
                 ProductItemViewBean productItemViewBean = ProductItemViewBean.create(idleFishProductBean, idleFishProductBean);
                 childViewBeanTemps.add(productItemViewBean);
-                sourceChildViewBeanTemps.add(productItemViewBean);
             }
 
+            deviceProductMap.put(deviceListItemView, productViewsTemps);
             childViewBeanTemps.clear();
-            sourceChildViewBeanTemps.clear();
+
         });
 
-        deviceViews.clear();
-        deviceViews.addAll(deviceViewTemps);
-        productViews.clear();
-        productViews.addAll(productViewsTemps);
+
+        LogUtil.i(TAG, "完成用户缓存数据到View层转换：个数 = " + deviceProductMap.size() + "__" + deviceProductMap);
+        deviceListView.setItems(FXCollections.observableArrayList(deviceProductMap.keySet()));
+
     }
 
     @Override
     public void deviceConnectLogout(List<UIDevAppProductBindBean> devAppProductBindBeans, UIDevAppProductBindBean bean) {
-//        有设备连接， 未登录闲鱼用户
+//        todo 有设备连接， 未登录闲鱼用户
     }
 
     @Override
     public void deviceConnectLogin(List<UIDevAppProductBindBean> devAppProductBindBeans, UIDevAppProductBindBean bean) {
-//        有设备连接， 并登录了闲鱼用户
+//        todo 有设备连接， 并登录了闲鱼用户
     }
 
     @Override
     public void deviceDisconnectLogin(List<UIDevAppProductBindBean> devAppProductBindBeans, UIDevAppProductBindBean bean) {
-//        从连接登录状态  转为  未连接状态
+//        todo 从连接登录状态  转为  未连接状态
     }
 
     @Override
     public void deviceDisconnectLogout(List<UIDevAppProductBindBean> devAppProductBindBeans, UIDevAppProductBindBean bean) {
-//        设备未登录状态下断开连接， 移除设备UI即可
+//        todo 设备未登录状态下断开连接， 移除设备UI即可
     }
 
 }

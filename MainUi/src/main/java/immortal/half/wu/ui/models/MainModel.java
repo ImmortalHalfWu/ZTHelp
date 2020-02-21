@@ -2,7 +2,6 @@ package immortal.half.wu.ui.models;
 
 import com.sun.istack.internal.NotNull;
 import immortal.half.wu.FileUtils;
-import immortal.half.wu.device.DeviceManager;
 import immortal.half.wu.device.division.NullUiAndroidDevice;
 import immortal.half.wu.device.division.NullUiApp;
 import immortal.half.wu.device.division.UIIdleFishProductBean;
@@ -10,7 +9,7 @@ import immortal.half.wu.device.division.UIUserInfoBean;
 import immortal.half.wu.device.division.interfaces.IUiAndroidDevice;
 import immortal.half.wu.device.division.interfaces.IUiApp;
 import immortal.half.wu.device.interfaces.DeviceAppListener;
-import immortal.half.wu.ui.models.beans.IdleFishUserConfigBean;
+import immortal.half.wu.ui.models.beans.CacheIdleFishUserConfigBean;
 import immortal.half.wu.ui.models.beans.UIDevAppProductBindBean;
 import immortal.half.wu.ui.models.interfaces.MainModelListener;
 import immortal.half.wu.ui.utils.ThreadUtil;
@@ -36,9 +35,9 @@ public class MainModel implements DeviceAppListener {
         ThreadUtil.runInWork(() -> {
             userInfoManager = UserInfoManager.getInstance();
 
-            userInfoManager.getUserInfos().forEach(new Consumer<IdleFishUserConfigBean.IdleFishUserInfoBean>() {
+            userInfoManager.getUserInfos().forEach(new Consumer<CacheIdleFishUserConfigBean.CacheIdleFishUserInfoBean>() {
                 @Override
-                public void accept(IdleFishUserConfigBean.IdleFishUserInfoBean userInfoBean) {
+                public void accept(CacheIdleFishUserConfigBean.CacheIdleFishUserInfoBean userInfoBean) {
                     devAppProductBindBeans.add(
                             UIDevAppProductBindBean.create(
                                     UIUserInfoBean.createLogout(userInfoBean.getUserName(), "0", false),
@@ -49,7 +48,7 @@ public class MainModel implements DeviceAppListener {
             });
 
             listener.loadUserConfigOver(devAppProductBindBeans);
-            DeviceManager.getInstance().setListener(MainModel.this);
+//            DeviceManager.getInstance().setListener(MainModel.this); todo 注释
         });
 
     }

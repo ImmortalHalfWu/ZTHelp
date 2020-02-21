@@ -10,17 +10,8 @@ import java.util.List;
 
 public class ProductListItemView extends HBox {
 
-    /*
-    <HBox
-    fx:id="root"
-    -fx-background-color: #eeeeee; -fx-min-height: 253; -fx-max-height: 253"
-    xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="wu.controllers.ListViewItemController2">
-     */
     private static final int MAX_CHILD_COUNT = 4;
-
     private List<ProductItemViewBean> productItemChildViewBeans;
-
 
     public ProductListItemView(List<ProductItemViewBean> dataBeans) {
         super();
@@ -35,18 +26,6 @@ public class ProductListItemView extends HBox {
         initLayout();
 
     }
-//    public ProductListItemView(ProductItemViewBean... dataBeans) {
-//
-//        if (dataBeans != null && dataBeans.length > 0 && dataBeans.length <= MAX_CHILD_COUNT) {
-//            productItemChildViewBeans = dataBeans;
-//        } else {
-//            throw new IllegalStateException("ProductListItemView 收到的商品数量异常！" +
-//                (dataBeans == null ? "数据为null" : dataBeans));
-//        }
-//
-//        initLayout();
-//
-//    }
 
     private void initLayout() {
         setStyle("-fx-min-width: 828; -fx-max-width: 828;" +
@@ -58,6 +37,7 @@ public class ProductListItemView extends HBox {
             children.add(new ProductItemChildView(bean));
         }
     }
+
 
     @Override
     public String toString() {

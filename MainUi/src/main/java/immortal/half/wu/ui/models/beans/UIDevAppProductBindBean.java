@@ -6,7 +6,6 @@ import immortal.half.wu.device.division.UIIdleFishProductBean;
 import immortal.half.wu.device.division.UIUserInfoBean;
 import immortal.half.wu.device.division.interfaces.IUiAndroidDevice;
 import immortal.half.wu.device.division.interfaces.IUiApp;
-import immotal.half.wu.appManager.beans.IdleFishProductBean;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +13,7 @@ import java.util.Objects;
 public class UIDevAppProductBindBean {
 
 
-    public static UIDevAppProductBindBean create(UIUserInfoBean userName, List<IdleFishUserConfigBean.IdleFishProductBean> products) {
+    public static UIDevAppProductBindBean create(UIUserInfoBean userName, List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> products) {
         return new UIDevAppProductBindBean(
                 userName,
                 NullUiAndroidDevice.getInstance(),
@@ -25,7 +24,7 @@ public class UIDevAppProductBindBean {
     public static UIDevAppProductBindBean create(IUiAndroidDevice androidDevice,
                                                  IUiApp<UIIdleFishProductBean, UIUserInfoBean> app,
                                                  UIUserInfoBean userName,
-                                                 List<IdleFishUserConfigBean.IdleFishProductBean> products) {
+                                                 List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> products) {
         return new UIDevAppProductBindBean(
                 userName,
                 androidDevice,
@@ -37,13 +36,13 @@ public class UIDevAppProductBindBean {
     private UIUserInfoBean userName;
     private IUiAndroidDevice device;
     private IUiApp<UIIdleFishProductBean, UIUserInfoBean> app;
-    private List<IdleFishUserConfigBean.IdleFishProductBean> products;
+    private List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> products;
 
     private UIDevAppProductBindBean(
             UIUserInfoBean userName,
             IUiAndroidDevice device,
             IUiApp<UIIdleFishProductBean, UIUserInfoBean> app,
-            List<IdleFishUserConfigBean.IdleFishProductBean> products) {
+            List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> products) {
         this.userName = userName;
         this.device = device;
         this.app = app;
@@ -66,7 +65,7 @@ public class UIDevAppProductBindBean {
         return app;
     }
 
-    public List<IdleFishUserConfigBean.IdleFishProductBean> getProducts() {
+    public List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> getProducts() {
         return products;
     }
 
@@ -82,7 +81,7 @@ public class UIDevAppProductBindBean {
         this.app = app;
     }
 
-    public void setProducts(List<IdleFishUserConfigBean.IdleFishProductBean> products) {
+    public void setProducts(List<CacheIdleFishUserConfigBean.CacheIdleFishProductBean> products) {
         this.products = products;
     }
 

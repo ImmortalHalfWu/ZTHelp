@@ -37,7 +37,7 @@ public class MyListViewDemo3 extends Application {
                 "#26A426",
                 "" + i + 1000,
                 "" + i * 2  + 1000,
-                "" + i  + 1000
+                "" + i  + 1000, new ArrayList<>()
             ));
         }
 

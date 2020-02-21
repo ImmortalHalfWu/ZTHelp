@@ -1,7 +1,13 @@
 package immortal.half.wu.ui.weights;
 
 import com.jfoenix.controls.JFXRippler;
+import immortal.half.wu.ui.events.ProductItemClickEvent;
+import immortal.half.wu.ui.events.ProductItemDelClickEvent;
+import immortal.half.wu.ui.events.ProductItemEditClickEvent;
+import immortal.half.wu.ui.utils.MEventBus;
 import immortal.half.wu.ui.weights.beans.ProductItemViewBean;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -9,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import immortal.half.wu.ui.utils.ThreadUtil;
@@ -53,6 +60,8 @@ public class ProductItemChildView extends JFXRippler {
     private Runnable initLayoutRunnable = new Runnable() {
         @Override
         public void run()  {
+
+
             nodesTemps = new ArrayList<>();
 
             setAlignment(Pos.BOTTOM_RIGHT);
@@ -73,7 +82,15 @@ public class ProductItemChildView extends JFXRippler {
             rootStackPane.setStyle("-fx-min-width: 194; -fx-max-width: 194;" +
                 "-fx-min-height: 238; -fx-max-height: 238;" +
                 "-fx-background-color: WHITE; -fx-background-radius: 10,10,5,5;");
-
+            rootStackPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    MEventBus.post(new ProductItemClickEvent(dataBean));
+                }
+            });
+//            rootStackPane.setOnMouseClicked(event -> {
+//                MEventBus.post(new ProductItemClickEvent(dataBean));
+//            });
 
         /*
             <ImageView
@@ -85,9 +102,9 @@ public class ProductItemChildView extends JFXRippler {
             </ImageView>
          */
             productImage = new ImageView();
-            productImage.setFitHeight(135);
+            productImage.setFitHeight(194);
             productImage.setFitWidth(194);
-            Rectangle clip = new Rectangle(194, 135);
+            Rectangle clip = new Rectangle(194, 194);
             clip.setArcWidth(20);
             clip.setArcHeight(20);
             productImage.setClip(clip);
@@ -112,6 +129,12 @@ public class ProductItemChildView extends JFXRippler {
          */
             delBt = createButton("删除商品", "#FB522A");
             StackPane.setMargin(delBt, new Insets(95, 0, 0 ,0));
+            delBt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    MEventBus.post(new ProductItemDelClickEvent(dataBean));
+                }
+            });
             nodesTemps.add(delBt);
 
 
@@ -132,6 +155,12 @@ public class ProductItemChildView extends JFXRippler {
          */
             editBt = createButton("编辑商品", "#FF8130");
             StackPane.setMargin(editBt, new Insets(95, 0, 0, 97));
+            editBt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    MEventBus.post(new ProductItemEditClickEvent(dataBean));
+                }
+            });
             nodesTemps.add(editBt);
 
 
@@ -145,7 +174,7 @@ public class ProductItemChildView extends JFXRippler {
             </Label>
          */
             Label tempLabel = new Label();
-            tempLabel.setMinSize(194, 10);
+            tempLabel.setMinSize(194, 100);
             tempLabel.setStyle("-fx-background-color: WHITE;");
             StackPane.setMargin(tempLabel, new Insets(130, 0, 0, 0));
             nodesTemps.add(tempLabel);
